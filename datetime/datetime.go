@@ -87,3 +87,13 @@ func SecRestOfDay(unixTime int64) int {
 func DayOfUnixEpoch(unixTime int64) int {
 	return int((unixTime + int64(OffsetSec())) / SecOneDay)
 }
+
+// FirstUnixTimeOfDay 返回指定时间戳所在日期的第一秒的时间戳
+func FirstUnixTimeOfDay(unixTime int64) int64 {
+	return unixTime - (unixTime + int64(OffsetSec())) % SecOneDay
+}
+
+// LastUnixTimeOfDay 返回指定时间戳所在日期的最后一秒的时间戳
+func LastUnixTimeOfDay(unixTime int64) int64 {
+	return FirstUnixTimeOfDay(unixTime) + SecOneDay - 1
+}

@@ -26,9 +26,6 @@ var (
 
 	// 每天变化的
 	dayNow int
-	dateNow string
-	firstTimestampToday int64    // 今天的第一秒的时间戳
-	lastTimestampToday int64    // 今天的最后一秒的时间戳
 	dayOfUnixEpochNow int     // 获取今天是自1970-1-1以来的第几天
 	weekday time.Weekday
 	weekdayISO int    // ISO weekday，星期日设为7，范围[1, 7]
@@ -47,9 +44,7 @@ func init() {
 
 	go func() {
 		// 此时now不会发生变化，所以不加锁了
-		time.Sleep(
-			time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second() + 1, 0, time.Local).
-			Sub(now))
+		time.Sleep(time.Second - time.Duration(now.Nanosecond()))
 
 		setData()
 
@@ -70,21 +65,49 @@ func initData() {
 
 	zone, offsetSec = now.Zone()
 
-	now := time.Now()
+	now = time.Now()
 	unixTime = now.Unix()
 	secondNow = now.Second()
 	minuteNow = now.Minute()
 	hourNow = now.Hour()
 	yearNow, monthNow, dayNow = now.Date()
-	dateNow = now.Format(TimeFormatDate)
 	datetimeNow = now.Format(TimeFormatDatetime)
 
-	firstTimestampToday = now.Unix() - (now.Unix() + int64(offsetSec)) % SecOneDay
-	lastTimestampToday = firstTimestampToday + SecOneDay - 1
 	dayOfUnixEpochNow = DayOfUnixEpoch(unixTime)
 
 	weekday = now.Weekday()
 	weekdayISO = ToWeekdayISO(weekday)
+}
+
+func onYearChange() {
+	yearNow = now.Year()
+
+	onMonthChange()
+}
+
+func onMonthChange() {
+	monthNow = now.Month()
+
+	onDayChange()
+}
+
+func onDayChange() {
+	dayNow = now.Day()
+	dayOfUnixEpochNow = DayOfUnixEpoch(unixTime)
+	weekday = now.Weekday()
+	weekdayISO = ToWeekdayISO(weekday)
+
+	onHourChange()
+}
+
+func onHourChange() {
+	hourNow = now.Hour()
+
+	onMinuteChange()
+}
+
+func onMinuteChange() {
+	minuteNow = now.Minute()
 }
 
 func setData() {
@@ -93,61 +116,34 @@ func setData() {
 
 	now = time.Now()
 	unixTime = now.Unix()
+	secondNow = now.Second()
+	old := datetimeNow
 	datetimeNow = now.Format(TimeFormatDatetime)
 
-	oldSec := secondNow
-	secondNow = now.Second()
-
-	if secondNow >= oldSec {
+	if old[0:4] != datetimeNow[0:4] {
+		onYearChange()
 		return
 	}
 
-	// minute 发生变化时
-	oldMin := minuteNow
-	minuteNow = (minuteNow + 1) % 60
-
-	if minuteNow >= oldMin {
+	if old[5:7] != datetimeNow[5:7] {
+		onMonthChange()
 		return
 	}
 
-	// hour 发生变化时
-	oldHour := hourNow
-	hourNow = (hourNow + 1) % 24
-
-	if hourNow >= oldHour {
+	if old[8:10] != datetimeNow[8:10] {
+		onDayChange()
 		return
 	}
 
-	// day 发生变化时
-	oldDay := dayNow
-	dayNow = now.Day()
-	dateNow = now.Format(TimeFormatDate)
-	firstTimestampToday += SecOneDay
-	lastTimestampToday += SecOneDay
-	dayOfUnixEpochNow++
-	weekday = (weekday + 1) % 7
-	weekdayISO = weekdayISO + 1
-	if weekdayISO == 8 {
-		weekdayISO = 1
-	}
-
-	if dayNow >= oldDay {
+	if old[11:13] != datetimeNow[11:13] {
+		onHourChange()
 		return
 	}
 
-	// month 发生变化时
-	oldMonth := monthNow
-	monthNow = monthNow + 1
-	if monthNow == 13 {
-		monthNow = 1
-	}
-
-	if monthNow >= oldMonth {
+	if old[14:16] != datetimeNow[14:16] {
+		onMinuteChange()
 		return
 	}
-
-	// year 发生变化时
-	yearNow++
 }
 
 func Zone() string {
@@ -218,7 +214,7 @@ func DateNow() string {
 	rwLock.RLock()
 	defer rwLock.RUnlock()
 
-	return dateNow
+	return datetimeNow[0:10]
 }
 
 func DatetimeNow() string {
@@ -226,20 +222,6 @@ func DatetimeNow() string {
 	defer rwLock.RUnlock()
 
 	return datetimeNow
-}
-
-func FirstTimeStampToday() int64 {
-	rwLock.RLock()
-	defer rwLock.RUnlock()
-
-	return firstTimestampToday
-}
-
-func LastTimeStampToday() int64 {
-	rwLock.RLock()
-	defer rwLock.RUnlock()
-
-	return lastTimestampToday
 }
 
 func DayOfUnixEpochNow() int {
