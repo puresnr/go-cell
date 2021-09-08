@@ -31,11 +31,15 @@ func LawAge(day, birthday string) int {
 	}
 
 	age := cast.Stoi(day[:4]) - cast.Stoi(birthday[:4])
-	if day[5:] <= birthday[5:] {
-		age -= 1
+	if age <= 0 {
+		return 0
 	}
 
-	return age
+	if day[5:] > birthday[5:] {
+		return age
+	}
+
+	return age - 1
 }
 
 // WeekFirstDate : 获取指定时间所在星期的星期一的日期, 形如 2006-01-01
