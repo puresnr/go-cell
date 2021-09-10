@@ -15,6 +15,7 @@ var (
 	// 每秒都变化的
 	now time.Time
 	unixTime int64
+	unixNow int64
 	datetimeNow string
 	secondNow int
 
@@ -66,14 +67,14 @@ func initData() {
 	zone, offsetSec = now.Zone()
 
 	now = time.Now()
-	unixTime = now.Unix()
+	unixNow = now.Unix()
 	secondNow = now.Second()
 	minuteNow = now.Minute()
 	hourNow = now.Hour()
 	yearNow, monthNow, dayNow = now.Date()
 	datetimeNow = now.Format(TimeFormatDatetime)
 
-	dayOfUnixEpochNow = DayOfUnixEpoch(unixTime)
+	dayOfUnixEpochNow = DayOfUnixEpoch(unixNow)
 
 	weekday = now.Weekday()
 	weekdayISO = ToWeekdayISO(weekday)
@@ -93,7 +94,7 @@ func onMonthChange() {
 
 func onDayChange() {
 	dayNow = now.Day()
-	dayOfUnixEpochNow = DayOfUnixEpoch(unixTime)
+	dayOfUnixEpochNow = DayOfUnixEpoch(unixNow)
 	weekday = now.Weekday()
 	weekdayISO = ToWeekdayISO(weekday)
 
@@ -115,7 +116,7 @@ func setData() {
 	defer rwLock.Unlock()
 
 	now = time.Now()
-	unixTime = now.Unix()
+	unixNow = now.Unix()
 	secondNow = now.Second()
 	old := datetimeNow
 	datetimeNow = now.Format(TimeFormatDatetime)
@@ -161,11 +162,11 @@ func Now() time.Time {
 	return now
 }
 
-func UnixTime() int64 {
+func UnixNow() int64 {
 	rwLock.RLock()
 	defer rwLock.RUnlock()
 
-	return unixTime
+	return unixNow
 }
 
 func HourNow() int {
