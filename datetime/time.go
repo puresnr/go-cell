@@ -14,7 +14,6 @@ var (
 
 	// 每秒都变化的
 	now time.Time
-	unixTime int64
 	unixNow int64
 	datetimeNow string
 	secondNow int
