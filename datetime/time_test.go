@@ -41,7 +41,7 @@ func TestSetData(t *testing.T) {
 		select {
 		case <- ticker.C:
 			tnow := time.Now()
-			assert.Equal(t, UnixTime(), tnow.Unix())
+			assert.Equal(t, UnixNow(), tnow.Unix())
 			assert.Equal(t, DatetimeNow(), tnow.Format(TimeFormatDatetime))
 			assert.Equal(t, SecondNow(), tnow.Second())
 			assert.Equal(t, MinuteNow(), tnow.Minute())
@@ -64,7 +64,7 @@ func TestSetData(t *testing.T) {
 		select {
 		case <- ticker.C:
 			tnow := time.Now()
-			assert.Equal(t, UnixTime(), tnow.Unix())
+			assert.Equal(t, UnixNow(), tnow.Unix())
 			assert.Equal(t, DatetimeNow(), tnow.Format(TimeFormatDatetime))
 			assert.Equal(t, SecondNow(), tnow.Second())
 			assert.Equal(t, MinuteNow(), tnow.Minute())
@@ -87,7 +87,7 @@ func TestSetData(t *testing.T) {
 		select {
 		case <- ticker.C:
 			tnow := time.Now()
-			assert.Equal(t, UnixTime(), tnow.Unix())
+			assert.Equal(t, UnixNow(), tnow.Unix())
 			assert.Equal(t, DatetimeNow(), tnow.Format(TimeFormatDatetime))
 			assert.Equal(t, SecondNow(), tnow.Second())
 			assert.Equal(t, MinuteNow(), tnow.Minute())
@@ -114,7 +114,7 @@ func TestSetData(t *testing.T) {
 		select {
 		case <- ticker.C:
 			tnow := time.Now()
-			assert.Equal(t, UnixTime(), tnow.Unix())
+			assert.Equal(t, UnixNow(), tnow.Unix())
 			assert.Equal(t, DatetimeNow(), tnow.Format(TimeFormatDatetime))
 			assert.Equal(t, SecondNow(), tnow.Second())
 			assert.Equal(t, MinuteNow(), tnow.Minute())
@@ -142,7 +142,7 @@ func TestSetData(t *testing.T) {
 		select {
 		case <- ticker.C:
 			tnow := time.Now()
-			assert.Equal(t, UnixTime(), tnow.Unix())
+			assert.Equal(t, UnixNow(), tnow.Unix())
 			assert.Equal(t, DatetimeNow(), tnow.Format(TimeFormatDatetime))
 			assert.Equal(t, SecondNow(), tnow.Second())
 			assert.Equal(t, MinuteNow(), tnow.Minute())

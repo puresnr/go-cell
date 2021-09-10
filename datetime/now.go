@@ -16,20 +16,20 @@ func WeekFirstDateNow() string {
 
 // SecPastToday ：获取今天已经过去了多少秒 [0, 86399]
 func SecPastToday() int {
-	return SecPastOfDay(UnixTime())
+	return SecPastOfDay(UnixNow())
 }
 
 // SecRestToday : 获取今天还剩余多少秒 [1, 86400]
 func SecRestToday() int {
-	return SecRestOfDay(UnixTime())
+	return SecRestOfDay(UnixNow())
 }
 
 // FirstUnixTimeToday 返回当天第一秒的时间戳
 func FirstUnixTimeToday() int64 {
-	return FirstUnixTimeOfDay(UnixTime())
+	return FirstUnixTimeOfDay(UnixNow())
 }
 
 // LastUnixTimeToday 返回当天最后一秒的时间戳
 func LastUnixTimeToday(unixTime int64) int64 {
-	return LastUnixTimeOfDay(UnixTime())
+	return LastUnixTimeOfDay(UnixNow())
 }
