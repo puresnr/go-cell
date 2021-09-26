@@ -9,14 +9,14 @@ import (
 
 var (
 	// 这两个值一旦设置就不会改变
-	zone string
+	zone      string
 	offsetSec int
 
 	// 每秒都变化的
-	now time.Time
-	unixNow int64
+	now         time.Time
+	unixNow     int64
 	datetimeNow string
-	secondNow int
+	secondNow   int
 
 	// 每分钟变化的
 	minuteNow int
@@ -25,10 +25,10 @@ var (
 	hourNow int
 
 	// 每天变化的
-	dayNow int
-	dayOfUnixEpochNow int     // 获取今天是自1970-1-1以来的第几天
-	weekday time.Weekday
-	weekdayISO int    // ISO weekday，星期日设为7，范围[1, 7]
+	dayNow            int
+	dayOfUnixEpochNow int // 获取今天是自1970-1-1以来的第几天
+	weekdayNow        time.Weekday
+	weekdayISONow     int // ISO weekday，星期日设为7，范围[1, 7]
 
 	// 每月变化的
 	monthNow time.Month
@@ -53,7 +53,7 @@ func init() {
 
 		for {
 			select {
-			case <- ticker.C:
+			case <-ticker.C:
 				setData()
 			}
 		}
@@ -75,8 +75,8 @@ func initData() {
 
 	dayOfUnixEpochNow = DayOfUnixEpoch(unixNow)
 
-	weekday = now.Weekday()
-	weekdayISO = ToWeekdayISO(weekday)
+	weekdayNow = now.Weekday()
+	weekdayISONow = ToWeekdayISO(weekdayNow)
 }
 
 func onYearChange() {
@@ -94,8 +94,8 @@ func onMonthChange() {
 func onDayChange() {
 	dayNow = now.Day()
 	dayOfUnixEpochNow = DayOfUnixEpoch(unixNow)
-	weekday = now.Weekday()
-	weekdayISO = ToWeekdayISO(weekday)
+	weekdayNow = now.Weekday()
+	weekdayISONow = ToWeekdayISO(weekdayNow)
 
 	onHourChange()
 }
@@ -231,16 +231,16 @@ func DayOfUnixEpochNow() int {
 	return dayOfUnixEpochNow
 }
 
-func Weekday() time.Weekday {
+func WeekdayNow() time.Weekday {
 	rwLock.RLock()
 	defer rwLock.RUnlock()
 
-	return weekday
+	return weekdayNow
 }
 
-func WeekdayISO() int {
+func WeekdayISONow() int {
 	rwLock.RLock()
 	defer rwLock.RUnlock()
 
-	return weekdayISO
+	return weekdayISONow
 }
