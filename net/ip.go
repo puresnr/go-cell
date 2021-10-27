@@ -3,22 +3,24 @@ package net
 
 import (
 	"github.com/puresnr/go-cell/cast"
+	error2 "github.com/puresnr/go-cell/error"
 	"net"
 	"strconv"
 	"strings"
 )
 
-// GetIP4 : 获取本机的IP4地址， 以 string 形式返回， 获取不到时，返回 ""
-func GetIP4() (string, error) {
+// GetIP4LAN 获取本机的局域网 IP4 地址， 以 string 形式返回，获取不到时，返回 ""
+func GetIP4LAN() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		return "", err
+		return "", error2.Wrap(err)
 	}
 
 	for _, value := range addrs {
-		if ipnet, ok := value.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+		if ipnet, ok := value.(*net.IPNet); ok && ipnet.IP.IsPrivate() {
 			if ip4 := ipnet.IP.To4(); ip4 != nil {
-				return cast.ToString_32u(uint32(ip4[0])) + "." + cast.ToString_32u(uint32(ip4[1])) + "." + cast.ToString_32u(uint32(ip4[2])) + "." + cast.ToString_32u(uint32(ip4[3])), nil
+				return cast.ToString_32u(uint32(ip4[0])) + "." + cast.ToString_32u(uint32(ip4[1])) + "." +
+					cast.ToString_32u(uint32(ip4[2])) + "." + cast.ToString_32u(uint32(ip4[3])), nil
 			}
 		}
 	}
@@ -26,15 +28,15 @@ func GetIP4() (string, error) {
 	return "", nil
 }
 
-// GetIP4Uint : 获取本机的IP4地址，并将其转换成一个 uint32 整数返回, 获取不到时，返回 0
-func GetIP4Uint() (uint32, error) {
+// GetIP4UintLAN 获取本机的局域网 IP4 地址，并将其转换成一个 uint32 整数返回, 获取不到时，返回 0
+func GetIP4UintLAN() (uint32, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		return 0, err
+		return 0, error2.Wrap(err)
 	}
 
 	for _, value := range addrs {
-		if ipnet, ok := value.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+		if ipnet, ok := value.(*net.IPNet); ok && ipnet.IP.IsPrivate() {
 			if ip4 := ipnet.IP.To4(); ip4 != nil {
 				return (uint32(ip4[0]) << 24) | (uint32(ip4[1]) << 16) | (uint32(ip4[2]) << 8) | uint32(ip4[3]), nil
 			}

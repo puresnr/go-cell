@@ -15,9 +15,14 @@ func TestIP4ToUint(t *testing.T) {
 	assert.Equal(t, uint32(3232235777), IP4ToUint("192.168.1.1"))
 }
 
-func TestGetIP4Uint(t *testing.T) {
-	ip, _ := GetIP4()
-	intip, _ := GetIP4Uint()
+func TestGetIP4LAN(t *testing.T) {
+	ip, _ := GetIP4LAN()
+	assert.Equal(t, "192.168.28.139", ip)
+}
+
+func TestGetIP4UintLAN(t *testing.T) {
+	ip, _ := GetIP4LAN()
+	intip, _ := GetIP4UintLAN()
 
 	assert.Equal(t, IP4ToUint(ip), intip)
 }
