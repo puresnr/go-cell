@@ -1,15 +1,11 @@
 package aslice
 
-const (
-	InvalidIdx = -1
-)
-
 func Erase[T comparable](sli *[]T, t T) {
 	if sli == nil {
 		return
 	}
 
-	if idx := Find(*sli, t); idx != InvalidIdx {
+	if idx := Find(*sli, t); idx != uint(len(*sli)) {
 		*sli = append((*sli)[:idx], (*sli)[idx+1:]...)
 	}
 }
@@ -19,37 +15,37 @@ func EraseIf[T any](sli *[]T, compare func(v T) bool) {
 		return
 	}
 
-	if idx := FindIf(*sli, compare); idx != InvalidIdx {
+	if idx := FindIf(*sli, compare); idx != uint(len(*sli)) {
 		*sli = append((*sli)[:idx], (*sli)[idx+1:]...)
 	}
 }
 
-func Find[T comparable](sli []T, t T) int {
+func Find[T comparable](sli []T, t T) uint {
 	for i, v := range sli {
 		if v == t {
-			return i
+			return uint(i)
 		}
 	}
 
-	return InvalidIdx
+	return uint(len(sli))
 }
 
-func FindIf[T any](sli []T, compare func(v T) bool) int {
+func FindIf[T any](sli []T, compare func(v T) bool) uint {
 	for i, v := range sli {
 		if compare(v) {
-			return i
+			return uint(i)
 		}
 	}
 
-	return InvalidIdx
+	return uint(len(sli))
 }
 
 func Exist[T comparable](sli []T, t T) bool {
-	return Find(sli, t) != InvalidIdx
+	return Find(sli, t) != uint(len(sli))
 }
 
 func ExistIf[T any](sli []T, compare func(v T) bool) bool {
-	return FindIf(sli, compare) != InvalidIdx
+	return FindIf(sli, compare) != uint(len(sli))
 }
 
 // Reverse reverses the order of the elements in sli
