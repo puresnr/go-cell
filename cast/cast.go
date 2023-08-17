@@ -1,26 +1,36 @@
 // Package cast 提供类型相互转换的功能
 package cast
 
-import "strconv"
+import (
+	"github.com/puresnr/go-cell/generic"
+	"strconv"
+)
 
-// ToString : equivalent to FormatInt(int64(i), 10).
-func ToString(i int) string {
+/*
+变量转字符串:
+	性能测试:
+		1. FormatInt 直接指定类型肯定比泛型快, 但是时间相差无几, 不足1纳秒, 但是泛型写着更简单
+		2. FormatInt 比 Sprint 之类的快 4 倍
+		3. Sprint 和 Sprintf 不相伯仲, 不能说哪个一定更快, 然后 Sprintf 中 %d 和 %v 也是, 不能说哪个更快. 最后, 一般来说泛型更慢, 而且这种情况下用 interface 就行
+	总结:
+		1. 整数类用 FormatInt 泛型
+		2. 其它的用 Sprint
+*/
+
+func ToString[T generic.Signed](i T) string {
 	return strconv.FormatInt(int64(i), 10)
 }
 
-// ToString_64 : equivalent to FormatInt(i, 10).
-func ToString_64(i int64) string {
-	return strconv.FormatInt(i, 10)
-}
-
-// ToString_64u : equivalent to FormatUint(i, 10).
-func ToString_64u(i uint64) string {
-	return strconv.FormatUint(i, 10)
-}
-
-// ToString_32u : equivalent to FormatUint(uint64(i), 10).
-func ToString_32u(i uint32) string {
+func ToString_u[T generic.Unsigned](i T) string {
 	return strconv.FormatUint(uint64(i), 10)
+}
+
+func ToStringBase[T1 generic.Signed, T2 generic.Integer](i T1, base T2) string {
+	return strconv.FormatInt(int64(i), int(base))
+}
+
+func ToStringBase_u[T1 generic.Unsigned, T2 generic.Integer](i T1, base T2) string {
+	return strconv.FormatUint(uint64(i), int(base))
 }
 
 // Stoi_64 : 把一个string转换为int64, 不会报错，不能转换的值会设为0
@@ -71,4 +81,32 @@ func StoiSlice_32u(strs []string) []uint32 {
 	}
 
 	return ints
+}
+
+// StoiSlice_64u : 把一个string的slice转换成uint64的slice, 转换中不会报错，不能转换的元素会被置为0
+func StoiSlice_64u(strs []string) []uint64 {
+	ints := make([]uint64, len(strs))
+	for idx, s := range strs {
+		ints[idx] = Stoi_64u(s)
+	}
+
+	return ints
+}
+
+func ByteToIntSlice_32u(bs []byte) []uint32 {
+	is := make([]uint32, len(bs))
+	for i, v := range bs {
+		is[i] = uint32(v)
+	}
+
+	return is
+}
+
+func IntToByteSlice_32u(is []uint32) []byte {
+	bs := make([]byte, len(is))
+	for i, v := range is {
+		bs[i] = byte(v)
+	}
+
+	return bs
 }
