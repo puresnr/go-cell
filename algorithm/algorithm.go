@@ -1,4 +1,8 @@
-package aslice
+package algorithm
+
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // 查找元素位置时, 找不到该元素的返回值. 在 C++ 里, 这个类型是 size_t, 是个无符号数, 但是 GO 里 len() 返回的是 int, 所以这里如果返回无符号数,
 // 实际使用时就会特别麻烦, 需要不停的强转, 所以只好也定义为 int 了. 然后因为是 int 了, 索性就定义为一个不可能的下标, 即负数, 这样实际使用时,
@@ -81,4 +85,47 @@ func ReverseCopy[T any](sli []T) []T {
 		rsli[len(sli)-1-i] = sli[i]
 	}
 	return rsli
+}
+
+// Min 返回两个值中较小的一个，相同时，返回第一个
+func Min[T constraints.Ordered](v1, v2 T) T {
+	if v1 > v2 {
+		return v2
+	}
+
+	return v1
+}
+
+// Max 返回两个值中较大的一个，相同时，返回第一个
+func Max[T constraints.Ordered](v1, v2 T) T {
+	if v1 < v2 {
+		return v2
+	}
+
+	return v1
+}
+
+// Pick 根据 compare 的结果返回元素, 如果是 true 返回前者, 否则返回后者
+// todo: Pick 无法实现短路特性, 传参总是会被计算
+func Pick[T any](t1 T, t2 T, compare func() bool) T {
+	if compare() {
+		return t1
+	}
+	return t2
+}
+
+func Empty_slice[T any](sli []T) bool {
+	return len(sli) == 0
+}
+
+func Empty_map[T any](m map[any]any) bool {
+	return len(m) == 0
+}
+
+func Empty_str(str string) bool {
+	return len(str) == 0
+}
+
+func Empty_chan[T any](c chan T) bool {
+	return len(c) == 0
 }

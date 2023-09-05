@@ -1,4 +1,4 @@
-package aslice
+package algorithm
 
 import (
 	"github.com/puresnr/go-cell/cast"
