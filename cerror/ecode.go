@@ -9,6 +9,8 @@ type Ecode struct {
 	code int
 }
 
+func New(code int) *Ecode { return &Ecode{code: code} }
+
 func (e *Ecode) Error() string { return cast.ToString(e.code) }
 func (e *Ecode) Is(err error) bool {
 	_, ok := err.(*Ecode)
@@ -17,7 +19,7 @@ func (e *Ecode) Is(err error) bool {
 
 func (e *Ecode) Code() int { return e.code }
 
-var flagEcode = new(Ecode)
+var flagEcode = New(0)
 
 func IsEcode(err error) bool {
 	return errors.Is(err, flagEcode)
