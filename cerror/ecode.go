@@ -10,10 +10,6 @@ type ECode struct {
 }
 
 func (e *ECode) Error() string { return cast.ToString(e.Ecode) }
-func (e *ECode) Is(err error) bool {
-	_, ok := err.(*ECode)
-	return ok
-}
 
 var flagECode = new(ECode)
 
