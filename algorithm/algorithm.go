@@ -118,7 +118,7 @@ func Empty_slice[T any](sli []T) bool {
 	return len(sli) == 0
 }
 
-func Empty_map[T any](m map[any]any) bool {
+func Empty_map[TK comparable, TV any](m map[TK]TV) bool {
 	return len(m) == 0
 }
 
