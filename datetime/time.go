@@ -171,6 +171,8 @@ func (z *ZoneTime) onMinuteChange() {
 	z.nowMinute = z.now.Minute()
 }
 
+func (z *ZoneTime) Loc() *time.Location { return z.loc }
+
 func (z *ZoneTime) Zone() string {
 	return z.zone
 }
