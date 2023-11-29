@@ -2,6 +2,7 @@
 package cast
 
 import (
+	"errors"
 	"github.com/puresnr/go-cell/generic"
 	"strconv"
 )
@@ -109,4 +110,15 @@ func IntToByteSlice_32u(is []uint32) []byte {
 	}
 
 	return bs
+}
+
+var EOverflow = errors.New("overflow")
+
+func CastSafe[T1, T2 generic.Integer](src T1, tar *T2) error {
+	*tar = T2(src)
+
+	if T1(*tar) != src || (src < 0 && *tar > 0) || (src > 0 && *tar < 0) {
+		return EOverflow
+	}
+	return nil
 }
