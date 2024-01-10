@@ -9,26 +9,6 @@ import (
 	"strings"
 )
 
-// 因为 映客 GO 版本较低，不支持这个函数，所以拷贝了一份出来
-// isPrivateIP reports whether ip is a private address, according to
-// RFC 1918 (IPv4 addresses) and RFC 4193 (IPv6 addresses).
-func isPrivateIP(ip net.IP) bool {
-	if ip4 := ip.To4(); ip4 != nil {
-		// Following RFC 1918, Section 3. Private Address Space which says:
-		//   The Internet Assigned Numbers Authority (IANA) has reserved the
-		//   following three blocks of the IP address space for private internets:
-		//     10.0.0.0        -   10.255.255.255  (10/8 prefix)
-		//     172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
-		//     192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
-		return ip4[0] == 10 ||
-			(ip4[0] == 172 && ip4[1]&0xf0 == 16) ||
-			(ip4[0] == 192 && ip4[1] == 168)
-	}
-	// Following RFC 4193, Section 8. IANA Considerations which says:
-	//   The IANA has assigned the FC00::/7 prefix to "Unique Local Unicast".
-	return len(ip) == net.IPv6len && ip[0]&0xfe == 0xfc
-}
-
 // Deprecated : 使用 GetIP4LAN(), 因为某些情况下，该函数会返回 B 类地址
 func GetLocalIP() (string, error) {
 	// 获取所有网卡
@@ -59,7 +39,7 @@ func GetIP4LAN() (string, error) {
 	}
 
 	for _, value := range addrs {
-		if ipnet, ok := value.(*net.IPNet); ok && isPrivateIP(ipnet.IP) {
+		if ipnet, ok := value.(*net.IPNet); ok && ipnet.IP.IsPrivate() {
 			if ip4 := ipnet.IP.To4(); ip4 != nil {
 				return cast.ToString_u(uint32(ip4[0])) + "." + cast.ToString_u(uint32(ip4[1])) + "." +
 					cast.ToString_u(uint32(ip4[2])) + "." + cast.ToString_u(uint32(ip4[3])), nil
@@ -78,7 +58,7 @@ func GetIP4LANInt() (uint32, error) {
 	}
 
 	for _, value := range addrs {
-		if ipnet, ok := value.(*net.IPNet); ok && isPrivateIP(ipnet.IP) {
+		if ipnet, ok := value.(*net.IPNet); ok && ipnet.IP.IsPrivate() {
 			if ip4 := ipnet.IP.To4(); ip4 != nil {
 				return (uint32(ip4[0]) << 24) | (uint32(ip4[1]) << 16) | (uint32(ip4[2]) << 8) | uint32(ip4[3]), nil
 			}
