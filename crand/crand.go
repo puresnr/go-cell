@@ -1,7 +1,6 @@
 package crand
 
 import (
-	"github.com/puresnr/go-cell/celldef"
 	"math/rand"
 	"runtime"
 	"time"
@@ -14,7 +13,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func RandIdxByWeight(weight []float64) celldef.INT {
+func RandIdxByWeight(weight []float64) int {
 	value := rand.Float64()
 
 	for idx, v := range weight {
