@@ -13,7 +13,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func RandIdxByWeight(weight []float64) int {
+func RandIdxByWeights(weight []float64) int {
 	value := rand.Float64()
 
 	for idx, v := range weight {
