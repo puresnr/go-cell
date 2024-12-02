@@ -1,7 +1,7 @@
 package algorithm
 
 import (
-	"golang.org/x/exp/constraints"
+	"github.com/puresnr/go-cell/generic"
 )
 
 // 查找元素位置时, 找不到该元素的返回值. 在 C++ 里, 这个类型是 size_t, 是个无符号数, 但是 GO 里 len() 返回的是 int, 所以这里如果返回无符号数,
@@ -88,7 +88,7 @@ func ReverseCopy[T any](sli []T) []T {
 }
 
 // Min 返回两个值中较小的一个，相同时，返回第一个
-func Min[T constraints.Ordered](v1, v2 T) T {
+func Min[T generic.Ordered](v1, v2 T) T {
 	if v1 > v2 {
 		return v2
 	}
@@ -97,7 +97,7 @@ func Min[T constraints.Ordered](v1, v2 T) T {
 }
 
 // Max 返回两个值中较大的一个，相同时，返回第一个
-func Max[T constraints.Ordered](v1, v2 T) T {
+func Max[T generic.Ordered](v1, v2 T) T {
 	if v1 < v2 {
 		return v2
 	}

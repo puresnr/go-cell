@@ -7,7 +7,6 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/unknwon/com v1.0.1
 	github.com/wumansgy/goEncrypt v1.0.0
-	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
 )
 
 require (
